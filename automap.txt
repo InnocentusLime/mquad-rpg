@@ -1,0 +1,4 @@
+decor_rules.tmj
+
+[castle*]
+castle_rules.tmj
