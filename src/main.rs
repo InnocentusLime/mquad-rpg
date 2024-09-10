@@ -1,5 +1,8 @@
+mod render;
+
 use macroquad::prelude::*;
 use macroquad_tiled::*;
+use render::{Render, RenderModel};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum GameState {
@@ -21,6 +24,8 @@ async fn main() {
         &[("castle.tsj", &tileset)],
     ).unwrap();
 
+    let mut render = Render::new();
+
     loop {
         clear_background(LIGHTGRAY);
 
@@ -29,6 +34,11 @@ async fn main() {
         map.draw_tiles("FloorWall", Rect::new(0.0, 0.0, 32.0 * 30.0, 32.0 * 20.0), None);
         map.draw_tiles("Decor", Rect::new(0.0, 0.0, 32.0 * 30.0, 32.0 * 20.0), None);
         map.draw_tiles("DecorObjs", Rect::new(0.0, 0.0, 32.0 * 30.0, 32.0 * 20.0), None);
+
+        render.draw(&RenderModel {
+            map: Some(&map),
+            actors: &[],
+        });
 
         next_frame().await
     }

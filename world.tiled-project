@@ -10,5 +10,24 @@
     "properties": [
     ],
     "propertyTypes": [
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 1,
+            "members": [
+                {
+                    "name": "layer_order",
+                    "type": "string",
+                    "value": "0"
+                }
+            ],
+            "name": "RoomLayer",
+            "type": "class",
+            "useAs": [
+                "property",
+                "layer",
+                "project"
+            ]
+        }
     ]
 }

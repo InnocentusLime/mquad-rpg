@@ -187,7 +187,7 @@ checksum = "d8adc4bb1803a324070e64a98ae98f38934d91957a99cfb3a43dcbc01bc56439"
 [[package]]
 name = "macroquad"
 version = "0.4.13"
-source = "git+https://github.com/InnocentusLime/macroquad.git?branch=raw-tiled-patch#77a3eca88f5dc7948bb522978c00d0bbd47089e8"
+source = "git+https://github.com/InnocentusLime/macroquad.git?branch=layer-props-fix#8808cd522648fa026e7955227f0cc9d3e228f594"
 dependencies = [
  "fontdue",
  "glam",
@@ -196,13 +196,12 @@ dependencies = [
  "miniquad",
  "quad-rand",
  "quad-snd",
- "slotmap",
 ]
 
 [[package]]
 name = "macroquad-tiled"
 version = "0.2.1"
-source = "git+https://github.com/InnocentusLime/macroquad.git?branch=raw-tiled-patch#77a3eca88f5dc7948bb522978c00d0bbd47089e8"
+source = "git+https://github.com/InnocentusLime/macroquad.git?branch=layer-props-fix#8808cd522648fa026e7955227f0cc9d3e228f594"
 dependencies = [
  "macroquad",
  "nanoserde",
@@ -211,7 +210,7 @@ dependencies = [
 [[package]]
 name = "macroquad_macro"
 version = "0.1.8"
-source = "git+https://github.com/InnocentusLime/macroquad.git?branch=raw-tiled-patch#77a3eca88f5dc7948bb522978c00d0bbd47089e8"
+source = "git+https://github.com/InnocentusLime/macroquad.git?branch=layer-props-fix#8808cd522648fa026e7955227f0cc9d3e228f594"
 
 [[package]]
 name = "malloc_buf"
@@ -385,15 +384,6 @@ name = "simd-adler32"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d66dc143e6b11c1eddc06d5c423cfc97062865baf299914ab64caa38182078fe"
-
-[[package]]
-name = "slotmap"
-version = "1.0.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dbff4acf519f630b3a3ddcfaea6c06b42174d9a44bc70c620e9ed1649d58b82a"
-dependencies = [
- "version_check",
-]
 
 [[package]]
 name = "smallvec"
