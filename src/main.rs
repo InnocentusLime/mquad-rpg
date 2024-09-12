@@ -24,6 +24,8 @@ async fn main() {
         &[("castle.tsj", &tileset)],
     ).unwrap();
 
+    info!("{:?}", map);
+
     let mut render = Render::new();
 
     let mut pos = ivec2(9 * 32, 8 * 32);

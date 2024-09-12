@@ -36,7 +36,10 @@ impl Render {
         self.layer_buff.extend(map.raw_tiled_map.layers.iter()
             .map(|layer| {
                 let idx = layer.properties.iter().find(|x| x.name == "layer_order")
-                            .map(|x| x.value.parse::<u32>().unwrap())
+                            .map(|x| match &x.value {
+                                PropertyVal::UInt(x) => *x as u32,
+                                _ => panic!("Ouch")
+                            })
                             .unwrap_or(0);
                 (idx, layer.name.clone())
             })
