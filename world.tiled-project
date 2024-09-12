@@ -17,8 +17,8 @@
             "members": [
                 {
                     "name": "layer_order",
-                    "type": "string",
-                    "value": "0"
+                    "type": "int",
+                    "value": 0
                 }
             ],
             "name": "RoomLayer",
