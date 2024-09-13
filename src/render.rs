@@ -34,7 +34,11 @@ impl Render {
         atlas: &Texture2D,
     ) {
         self.tile_buffer.clear();
-        self.tile_buffer.extend(tiles);
+        self.tile_buffer.extend(tiles.map(|tile| RenderTile {
+            pos: (tile.pos + tile.render_off),
+            render_off: -tile.render_off,
+            ..tile
+        }));
         self.tile_buffer.sort_by_key(|tile| {
             (tile.pos.y, tile.pos.x, tile.z_order)
         });

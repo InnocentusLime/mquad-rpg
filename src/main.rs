@@ -30,7 +30,7 @@ async fn main() {
 
     let mut pos = ivec2(9 * 32, 8 * 32);
 
-    let render_off = ivec2(0, -32);
+    let render_off = ivec2(0, 32);
 
     loop {
         clear_background(LIGHTGRAY);
@@ -98,11 +98,9 @@ async fn main() {
                 })
                 .map(|((x, y), tile)| RenderTile {
                     z_order: 0,
-                    pos: if tile.id == 146 || tile.id == 147 || tile.id == 148 {
-                        ivec2(x as i32, y as i32 - 1) * 32
-                    } else { ivec2(x as i32, y as i32) * 32 },
+                    pos: ivec2(x as i32, y as i32) * 32,
                     render_off: if tile.id == 146 || tile.id == 147 || tile.id == 148 {
-                        ivec2(0, 32)
+                        ivec2(0, -32)
                     } else { ivec2(0, 0) },
                     tex_rect: tile_tex_rect(tile.id),
                 })
@@ -122,8 +120,8 @@ async fn main() {
         );
 
         draw_circle(
-            (pos.x) as f32,
-            (pos.y) as f32,
+            (pos.x + render_off.x) as f32,
+            (pos.y + render_off.y) as f32,
             2.0,
             RED
         );
