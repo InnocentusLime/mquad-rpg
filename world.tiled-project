@@ -13,10 +13,35 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 4,
+            "members": [
+                {
+                    "name": "display_def",
+                    "type": "file",
+                    "value": ""
+                }
+            ],
+            "name": "Actor",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 1,
             "members": [
                 {
                     "name": "layer_order",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "type",
+                    "propertyType": "RoomLayerTy",
                     "type": "int",
                     "value": 0
                 }
@@ -28,6 +53,17 @@
                 "layer",
                 "project"
             ]
+        },
+        {
+            "id": 3,
+            "name": "RoomLayerTy",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "TileLayer",
+                "ActorLayer"
+            ],
+            "valuesAsFlags": false
         }
     ]
 }
