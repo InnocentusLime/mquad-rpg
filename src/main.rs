@@ -43,6 +43,29 @@ async fn main() {
             h: tileset.tileheight as f32,
         }
     };
+    let raw_tileset = map.raw_tiled_map.tilesets.iter()
+        .find(|x| x.name == "castle")
+        .unwrap();
+    let get_tile_sort_off = |tile: &Tile| {
+        assert_eq!(tile.attrs, "Tile");
+        let props = &raw_tileset.tiles[tile.id as usize].properties;
+        let sort_off_x = props.iter().find(|x| x.name == "sort_off_x")
+            .map(|x| match x.value {
+                PropertyVal::Integer(x) => x as i32,
+                PropertyVal::UInt(x) => x as i32,
+                _ => panic!("Wrong sort_off_x type"),
+            })
+            .unwrap_or(0);
+        let sort_off_y = props.iter().find(|x| x.name == "sort_off_y")
+            .map(|x| match x.value {
+                PropertyVal::Integer(x) => x as i32,
+                PropertyVal::UInt(x) => x as i32,
+                _ => panic!("Wrong sort_off_y type"),
+            })
+            .unwrap_or(0);
+
+        ivec2(sort_off_x, sort_off_y)
+    };
     let layers = ["FloorWall", "DecorObjs"]
         .into_iter()
         .map(|x| &map.layers[x])
@@ -60,9 +83,7 @@ async fn main() {
             .map(|((x, y), tile)| RenderTile {
                 z_order: 0,
                 pos: ivec2(x as i32, y as i32) * 32,
-                sort_offset: if tile.id == 146 || tile.id == 147 || tile.id == 148 {
-                    ivec2(0, -32)
-                } else { ivec2(0, 0) },
+                sort_offset: get_tile_sort_off(tile),
                 tex_rect: tile_tex_rect(tile.id),
             })
             .collect::<Vec<_>>()
