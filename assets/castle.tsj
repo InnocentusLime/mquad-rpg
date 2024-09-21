@@ -467,6 +467,12 @@
         }, 
         {
          "id":114,
+         "properties":[
+                {
+                 "name":"sort_off_y",
+                 "type":"int",
+                 "value":32
+                }],
          "type":"Tile"
         }, 
         {
@@ -479,10 +485,22 @@
         }, 
         {
          "id":117,
+         "properties":[
+                {
+                 "name":"sort_off_y",
+                 "type":"int",
+                 "value":-16
+                }],
          "type":"Tile"
         }, 
         {
          "id":118,
+         "properties":[
+                {
+                 "name":"sort_off_y",
+                 "type":"int",
+                 "value":-16
+                }],
          "type":"Tile"
         }, 
         {
@@ -495,6 +513,12 @@
         }, 
         {
          "id":121,
+         "properties":[
+                {
+                 "name":"sort_off_y",
+                 "type":"int",
+                 "value":-32
+                }],
          "type":"Tile"
         }, 
         {
@@ -511,6 +535,12 @@
         }, 
         {
          "id":125,
+         "properties":[
+                {
+                 "name":"sort_off_y",
+                 "type":"int",
+                 "value":-16
+                }],
          "type":"Tile"
         }, 
         {
