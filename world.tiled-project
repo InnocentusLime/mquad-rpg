@@ -64,6 +64,36 @@
                 "ActorLayer"
             ],
             "valuesAsFlags": false
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 5,
+            "members": [
+                {
+                    "name": "sort_off_x",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "sort_off_y",
+                    "type": "int",
+                    "value": 0
+                }
+            ],
+            "name": "Tile",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
         }
     ]
 }
