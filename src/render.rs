@@ -30,7 +30,6 @@ impl Render {
     pub fn draw_tiles(
         &mut self,
         tiles: impl Iterator<Item = RenderTile>,
-        tile_size: f32,
         atlas: &Texture2D,
     ) {
         self.tile_buffer.clear();

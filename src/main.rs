@@ -28,110 +28,98 @@ async fn main() {
 
     let mut render = Render::new();
 
-    let mut pos = ivec2(9 * 32, 8 * 32);
+    let mut player_pos = ivec2(9 * 32, 8 * 32);
+    let player_sort_offset = ivec2(0, 32);
 
-    let sort_offset = ivec2(0, 32);
+    let tileset = &map.tilesets["castle"];
+    let tile_tex_rect = |id: u32| {
+        let x = (id % tileset.columns) * (tileset.tilewidth as u32);
+        let y = (id / tileset.columns) * (tileset.tileheight as u32);
+
+        Rect {
+            x: x as f32,
+            y: y as f32,
+            w: tileset.tilewidth as f32,
+            h: tileset.tileheight as f32,
+        }
+    };
+    let layers = ["FloorWall", "DecorObjs"]
+        .into_iter()
+        .map(|x| &map.layers[x])
+        .map(|layer| {
+            (0..layer.height).flat_map(|y| {
+                (0..layer.width).map(move |x| (x, y))
+            })
+            .filter_map(|(x, y)| {
+                let idx = (x + y * layer.width) as usize;
+                Some((
+                    (x, y),
+                    layer.data[idx].as_ref()?
+                ))
+            })
+            .map(|((x, y), tile)| RenderTile {
+                z_order: 0,
+                pos: ivec2(x as i32, y as i32) * 32,
+                sort_offset: if tile.id == 146 || tile.id == 147 || tile.id == 148 {
+                    ivec2(0, -32)
+                } else { ivec2(0, 0) },
+                tex_rect: tile_tex_rect(tile.id),
+            })
+            .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>();
+
 
     loop {
         clear_background(LIGHTGRAY);
 
         if is_key_down(KeyCode::A) {
-            pos.x -= 1;
+            player_pos.x -= 1;
         }
         if is_key_down(KeyCode::D) {
-            pos.x += 1;
+            player_pos.x += 1;
         }
         if is_key_down(KeyCode::W) {
-            pos.y -= 1;
+            player_pos.y -= 1;
         }
         if is_key_down(KeyCode::S) {
-            pos.y += 1;
+            player_pos.y += 1;
         }
 
-
-        let floor_layer = &map.layers["FloorWall"];
-        let objs_layer = &map.layers["DecorObjs"];
-        let tileset = &map.tilesets["castle"];
-        let tile_tex_rect = |id: u32| {
-            let x = (id % tileset.columns) * (tileset.tilewidth as u32);
-            let y = (id / tileset.columns) * (tileset.tileheight as u32);
-
-            Rect {
-                x: x as f32,
-                y: y as f32,
-                w: tileset.tilewidth as f32,
-                h: tileset.tileheight as f32,
-            }
+        let player_tile = RenderTile {
+            z_order: 0,
+            pos: player_pos,
+            sort_offset: player_sort_offset,
+            tex_rect: Rect {
+                x: 224.0,
+                y: 544.0,
+                w: 32.0,
+                h: 64.0,
+            },
         };
-        let pos_iter = (0..floor_layer.height).flat_map(|y| {
-            (0..floor_layer.width).map(move |x| (x, y))
-        });
-        render.draw_tiles(
-            pos_iter
-                .filter_map(|(x, y)| {
-                    let idx = (x + y * floor_layer.width) as usize;
-                    Some((
-                        (x, y),
-                        floor_layer.data[idx].as_ref()?
-                    ))
-                })
-                .map(|((x, y), tile)| RenderTile {
-                    z_order: 0,
-                    pos: ivec2(x as i32, y as i32) * 32,
-                    sort_offset: ivec2(0, 0),
-                    tex_rect: tile_tex_rect(tile.id),
-                }),
-            32.0,
-            &tileset_tex
-        );
-        let pos_iter = (0..objs_layer.height).flat_map(|y| {
-            (0..objs_layer.width).map(move |x| (x, y))
-        });
-        render.draw_tiles(
-            pos_iter
-                .filter_map(|(x, y)| {
-                    let idx = (x + y * objs_layer.width) as usize;
-                    Some((
-                        (x, y),
-                        objs_layer.data[idx].as_ref()?
-                    ))
-                })
-                .map(|((x, y), tile)| RenderTile {
-                    z_order: 0,
-                    pos: ivec2(x as i32, y as i32) * 32,
-                    sort_offset: if tile.id == 146 || tile.id == 147 || tile.id == 148 {
-                        ivec2(0, -32)
-                    } else { ivec2(0, 0) },
-                    tex_rect: tile_tex_rect(tile.id),
-                })
-                .chain(std::iter::once(RenderTile {
-                    z_order: 0,
-                    pos,
-                    sort_offset,
-                    tex_rect: Rect {
-                        x: 224.0,
-                        y: 544.0,
-                        w: 32.0,
-                        h: 64.0,
-                    },
-                })),
-            32.0,
-            &tileset_tex
-        );
+
+        for (i, layer) in layers.iter().enumerate() {
+            if i == 1 {
+                render.draw_tiles(
+                    layer.iter().map(|x| *x)
+                    .chain(std::iter::once(player_tile)),
+                    &tileset.texture
+                );
+            } else {
+                render.draw_tiles(
+                    layer.iter().map(|x| *x),
+                    &tileset.texture
+                );
+            }
+        }
 
         draw_circle(
-            (pos.x + sort_offset.x) as f32,
-            (pos.y + sort_offset.y) as f32,
+            (player_pos.x + player_sort_offset.x) as f32,
+            (player_pos.y + player_sort_offset.y) as f32,
             2.0,
             RED
         );
 
-        // render.draw(&RenderModel {
-        //     map: Some(&map),
-        //     actors: &[
-        //         (pos, 2, RED, uvec2(16, 64)),
-        //     ],
-        // });
         draw_text(&format!("FPS: {}", get_fps()), 0.0, 20.0, 16.0, RED);
 
         next_frame().await
