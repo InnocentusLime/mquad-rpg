@@ -7,7 +7,7 @@ const TILE_SIZE: u32 = 32;
 pub struct RenderTile {
     pub z_order: u8,
     pub pos: IVec2,
-    pub render_off: IVec2,
+    pub sort_offset: IVec2,
     pub tex_rect: Rect,
 }
 
@@ -35,8 +35,8 @@ impl Render {
     ) {
         self.tile_buffer.clear();
         self.tile_buffer.extend(tiles.map(|tile| RenderTile {
-            pos: (tile.pos + tile.render_off),
-            render_off: -tile.render_off,
+            pos: (tile.pos + tile.sort_offset),
+            sort_offset: -tile.sort_offset,
             ..tile
         }));
         self.tile_buffer.sort_by_key(|tile| {
@@ -44,7 +44,7 @@ impl Render {
         });
 
         self.tile_buffer.iter().for_each(|tile| {
-            let pos = (tile.pos + tile.render_off).as_vec2();
+            let pos = (tile.pos + tile.sort_offset).as_vec2();
             draw_texture_ex(
                 atlas,
                 pos.x,

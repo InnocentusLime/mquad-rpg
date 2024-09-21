@@ -30,7 +30,7 @@ async fn main() {
 
     let mut pos = ivec2(9 * 32, 8 * 32);
 
-    let render_off = ivec2(0, 32);
+    let sort_offset = ivec2(0, 32);
 
     loop {
         clear_background(LIGHTGRAY);
@@ -78,7 +78,7 @@ async fn main() {
                 .map(|((x, y), tile)| RenderTile {
                     z_order: 0,
                     pos: ivec2(x as i32, y as i32) * 32,
-                    render_off: ivec2(0, 0),
+                    sort_offset: ivec2(0, 0),
                     tex_rect: tile_tex_rect(tile.id),
                 }),
             32.0,
@@ -99,7 +99,7 @@ async fn main() {
                 .map(|((x, y), tile)| RenderTile {
                     z_order: 0,
                     pos: ivec2(x as i32, y as i32) * 32,
-                    render_off: if tile.id == 146 || tile.id == 147 || tile.id == 148 {
+                    sort_offset: if tile.id == 146 || tile.id == 147 || tile.id == 148 {
                         ivec2(0, -32)
                     } else { ivec2(0, 0) },
                     tex_rect: tile_tex_rect(tile.id),
@@ -107,7 +107,7 @@ async fn main() {
                 .chain(std::iter::once(RenderTile {
                     z_order: 0,
                     pos,
-                    render_off,
+                    sort_offset,
                     tex_rect: Rect {
                         x: 224.0,
                         y: 544.0,
@@ -120,8 +120,8 @@ async fn main() {
         );
 
         draw_circle(
-            (pos.x + render_off.x) as f32,
-            (pos.y + render_off.y) as f32,
+            (pos.x + sort_offset.x) as f32,
+            (pos.y + sort_offset.y) as f32,
             2.0,
             RED
         );
