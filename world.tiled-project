@@ -13,19 +13,19 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
-            "id": 4,
+            "id": 6,
             "members": [
                 {
-                    "name": "display_def",
-                    "type": "file",
+                    "name": "actor_layer",
+                    "type": "string",
                     "value": ""
                 }
             ],
-            "name": "Actor",
+            "name": "Map",
             "type": "class",
             "useAs": [
                 "property",
-                "object",
+                "map",
                 "project"
             ]
         },
@@ -35,15 +35,9 @@
             "id": 1,
             "members": [
                 {
-                    "name": "layer_order",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "type",
-                    "propertyType": "RoomLayerTy",
-                    "type": "int",
-                    "value": 0
+                    "name": "merge_with_prev",
+                    "type": "bool",
+                    "value": false
                 }
             ],
             "name": "RoomLayer",
@@ -53,17 +47,6 @@
                 "layer",
                 "project"
             ]
-        },
-        {
-            "id": 3,
-            "name": "RoomLayerTy",
-            "storageType": "int",
-            "type": "enum",
-            "values": [
-                "TileLayer",
-                "ActorLayer"
-            ],
-            "valuesAsFlags": false
         },
         {
             "color": "#ffa0a0a4",
@@ -85,13 +68,7 @@
             "type": "class",
             "useAs": [
                 "property",
-                "map",
-                "layer",
-                "object",
                 "tile",
-                "tileset",
-                "wangcolor",
-                "wangset",
                 "project"
             ]
         }

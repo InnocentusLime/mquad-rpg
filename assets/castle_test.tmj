@@ -1,4 +1,5 @@
-{ "compressionlevel":-1,
+{ "class":"Map",
+ "compressionlevel":-1,
  "height":20,
  "infinite":false,
  "layers":[
@@ -62,9 +63,9 @@
          "opacity":1,
          "properties":[
                 {
-                 "name":"layer_order",
-                 "type":"int",
-                 "value":1
+                 "name":"merge_with_prev",
+                 "type":"bool",
+                 "value":true
                 }],
          "type":"tilelayer",
          "visible":true,
@@ -96,14 +97,8 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":20,
          "id":3,
-         "name":"DecorObjs",
+         "name":"Objs",
          "opacity":1,
-         "properties":[
-                {
-                 "name":"layer_order",
-                 "type":"int",
-                 "value":2
-                }],
          "type":"tilelayer",
          "visible":true,
          "width":30,
@@ -134,13 +129,13 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":20,
          "id":4,
-         "name":"Extras",
+         "name":"Objs2",
          "opacity":1,
          "properties":[
                 {
-                 "name":"layer_order",
-                 "type":"int",
-                 "value":3
+                 "name":"merge_with_prev",
+                 "type":"bool",
+                 "value":true
                 }],
          "type":"tilelayer",
          "visible":true,
@@ -151,6 +146,12 @@
  "nextlayerid":10,
  "nextobjectid":12,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"actor_layer",
+         "type":"string",
+         "value":"Objs"
+        }],
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
  "tileheight":32,
