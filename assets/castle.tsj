@@ -615,6 +615,12 @@
         }, 
         {
          "id":142,
+         "properties":[
+                {
+                 "name":"sort_off_y",
+                 "type":"int",
+                 "value":32
+                }],
          "type":"Tile"
         }, 
         {
