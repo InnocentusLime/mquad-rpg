@@ -1,8 +1,10 @@
 mod render;
+mod urect;
 
 use macroquad::prelude::*;
 use macroquad_tiled::*;
-use render::{Render, RenderModel, RenderTile};
+use render::{Render, RenderLayer, RenderModel, RenderTile};
+use urect::URect;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum GameState {
@@ -66,30 +68,79 @@ async fn main() {
 
         ivec2(sort_off_x, sort_off_y)
     };
-    let layers = ["FloorWall", "DecorObjs"]
-        .into_iter()
-        .map(|x| &map.layers[x])
-        .map(|layer| {
-            (0..layer.height).flat_map(|y| {
-                (0..layer.width).map(move |x| (x, y))
-            })
-            .filter_map(|(x, y)| {
-                let idx = (x + y * layer.width) as usize;
-                Some((
-                    (x, y),
-                    layer.data[idx].as_ref()?
-                ))
-            })
-            .map(|((x, y), tile)| RenderTile {
-                z_order: 0,
-                pos: ivec2(x as i32, y as i32) * 32,
-                sort_offset: get_tile_sort_off(tile),
-                tex_rect: tile_tex_rect(tile.id),
-            })
-            .collect::<Vec<_>>()
-        })
-        .collect::<Vec<_>>();
 
+    let mut actor_layer = None;
+    let mut layer_groups = vec![Vec::<RenderLayer>::new()];
+
+    let layer_it = map.raw_tiled_map.layers.iter()
+        .enumerate();
+
+    for (i, layer) in layer_it {
+        if layer.name == "Actors" {
+            actor_layer = Some(i);
+            continue;
+        }
+        // match layer.ty.as_str() {
+        //     "ActorLayer" => {
+        //         actor_layer = Some(i);
+        //         continue;
+        //     },
+        //     "RenderLayer" => (),
+        //     x => panic!("Unknown layer type: {x:?}"),
+        // }
+
+        let same_group = layer.properties.iter()
+            .find(|x| x.name == "merge_with_prev")
+            .map(|x| match x.value {
+                PropertyVal::Boolean(x) => x,
+                _ => panic!("Wront merge_with_prev type"),
+            })
+            .unwrap_or(false);
+
+        if !same_group {
+            layer_groups.push(Vec::new());
+        }
+
+        let z_order = i as u8;
+        let unraw = map.layers.get(&layer.name)
+            .unwrap();
+        layer_groups.last_mut().unwrap().push(RenderLayer {
+            name: layer.name.clone(),
+            width: layer.width,
+            height: layer.height,
+            tiles: unraw.data.iter().enumerate().map(|(idx, x)| {
+                let idx = idx as u32;
+                let tile = x.as_ref()?;
+                Some(RenderTile {
+                    z_order,
+                    pos: ivec2(
+                        (idx % layer.width) as i32 * tileset.tilewidth,
+                        (idx / layer.width) as i32 * tileset.tileheight
+                    ),
+                    sort_offset: get_tile_sort_off(tile),
+                    tex_rect: tile_tex_rect(tile.id),
+                })
+            })
+            .collect(),
+        });
+    }
+
+    let mut model = RenderModel {
+        layer_groups,
+        actors: vec![RenderTile {
+            z_order: 0,
+            pos: player_pos,
+            sort_offset: player_sort_offset,
+            tex_rect: Rect {
+                x: 224.0,
+                y: 544.0,
+                w: 32.0,
+                h: 64.0,
+            },
+        }],
+        actor_layer: actor_layer.unwrap(),
+        atlas: tileset_tex,
+    };
 
     loop {
         clear_background(LIGHTGRAY);
@@ -107,7 +158,7 @@ async fn main() {
             player_pos.y += 1;
         }
 
-        let player_tile = RenderTile {
+        model.actors[0] = RenderTile {
             z_order: 0,
             pos: player_pos,
             sort_offset: player_sort_offset,
@@ -119,20 +170,12 @@ async fn main() {
             },
         };
 
-        for (i, layer) in layers.iter().enumerate() {
-            if i == 1 {
-                render.draw_tiles(
-                    layer.iter().map(|x| *x)
-                    .chain(std::iter::once(player_tile)),
-                    &tileset.texture
-                );
-            } else {
-                render.draw_tiles(
-                    layer.iter().map(|x| *x),
-                    &tileset.texture
-                );
-            }
-        }
+        render.draw(&model, URect {
+            x: 0,
+            y: 0,
+            w: 30,
+            h: 20,
+        });
 
         draw_circle(
             (player_pos.x + player_sort_offset.x) as f32,

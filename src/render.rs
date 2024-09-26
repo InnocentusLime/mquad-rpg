@@ -1,6 +1,8 @@
 use macroquad::prelude::*;
 use macroquad_tiled::*;
 
+use crate::urect::URect;
+
 const TILE_SIZE: u32 = 32;
 
 #[derive(Debug, Clone, Copy)]
@@ -11,9 +13,39 @@ pub struct RenderTile {
     pub tex_rect: Rect,
 }
 
-pub struct RenderModel<'a> {
-    pub map: Option<&'a Map>,
-    pub actors: &'a [(IVec2, u32, Color, UVec2)],
+pub struct RenderLayer {
+    pub name: String,
+    pub width: u32,
+    pub height: u32,
+    pub tiles: Vec<Option<RenderTile>>,
+}
+
+impl RenderLayer {
+    fn iter_tiles(&'_ self, cover_rect: URect) -> impl Iterator<Item = RenderTile> + '_ {
+        let pos_iter = (cover_rect.top()..cover_rect.bottom())
+            .flat_map(move |x| (cover_rect.left()..cover_rect.right())
+                .map(move |y| (x, y)));
+
+        pos_iter
+            .filter(|&(x, y)| x < self.width && y < self.height)
+            .map(|(x, y)| x + y * self.width)
+            .filter_map(|idx| *self.tiles.get(idx as usize)?)
+    }
+}
+
+pub struct RenderModel {
+    pub layer_groups: Vec<Vec<RenderLayer>>,
+    pub actors: Vec<RenderTile>,
+    pub actor_layer: usize,
+    pub atlas: Texture2D,
+}
+
+impl RenderModel {
+    // fn t(&self, u: URect) {
+    //     for x in &self.layer_groups {
+    //         let x = x.iter().flat_map(|x| x.iter_tiles(u));
+    //     }
+    // }
 }
 
 pub struct Render {
@@ -27,17 +59,41 @@ impl Render {
         }
     }
 
-    pub fn draw_tiles(
+    pub fn draw(
+        &mut self,
+        model: &RenderModel,
+        view_rect: URect,
+    ) {
+        let mut layer_idx = 0;
+        for group in &model.layer_groups {
+            for layer in group {
+                if layer_idx == model.actor_layer {
+                    self.buffer_tiles(model.actors.iter().map(|x| *x));
+                    layer_idx += 1;
+                }
+
+                self.buffer_tiles(layer.iter_tiles(view_rect));
+                layer_idx += 1;
+            }
+            self.draw_tiles(&model.atlas);
+        }
+    }
+
+    pub fn buffer_tiles(
         &mut self,
         tiles: impl Iterator<Item = RenderTile>,
-        atlas: &Texture2D,
     ) {
-        self.tile_buffer.clear();
         self.tile_buffer.extend(tiles.map(|tile| RenderTile {
             pos: (tile.pos + tile.sort_offset),
             sort_offset: -tile.sort_offset,
             ..tile
         }));
+    }
+
+    pub fn draw_tiles(
+        &mut self,
+        atlas: &Texture2D,
+    ) {
         self.tile_buffer.sort_by_key(|tile| {
             (tile.pos.y, tile.pos.x, tile.z_order)
         });
@@ -55,10 +111,8 @@ impl Render {
                     ..Default::default()
                 });
         });
-    }
 
-    pub fn draw(&mut self, model: &RenderModel) {
-
+        self.tile_buffer.clear();
     }
 
     // fn draw_map(&mut self, map: &Map, actors: &[(IVec2, u32, Color, UVec2)]) {
